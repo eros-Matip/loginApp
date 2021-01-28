@@ -1,21 +1,73 @@
-import { StatusBar } from 'expo-status-bar';
-import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import React, { useState, useEffect } from "react";
+import { NavigationContainer } from "@react-navigation/native";
+import { createStackNavigator } from "@react-navigation/stack";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
-export default function App() {
+// ROUTES
+import ConnectionScreen from "./containers/ConnectionScreen.js";
+import AccountScreen from "./containers/AccountScreen.js";
+
+const Stack = createStackNavigator();
+
+function App() {
+  const [dataReturn, setDataReturn] = useState("");
+  const [tokenFinded, setTokenFinded] = useState(null);
+
+  const handleClic = async () => {
+    await AsyncStorage.removeItem("token");
+    setTokenFinded(null);
+  };
+
+  useEffect(() => {
+    const userToken = async () => {
+      const response = await AsyncStorage.getItem("token");
+      setTokenFinded(response);
+    };
+    userToken();
+  }, []);
+
+  useEffect(() => {}, []);
+
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <NavigationContainer>
+      {tokenFinded === null ? (
+        <Stack.Navigator>
+          <Stack.Screen
+            name="Connection"
+            options={{ header: () => null, animationEnabled: false }}
+          >
+            {(props) => (
+              <ConnectionScreen
+                {...props}
+                dataReturn={dataReturn}
+                setTokenFinded={setTokenFinded}
+              />
+            )}
+          </Stack.Screen>
+          <Stack.Screen
+            name="Acount"
+            options={{ header: () => null, animationEnabled: false }}
+          >
+            {(props) => (
+              <AccountScreen
+                {...props}
+                setDataReturn={setDataReturn}
+                setTokenFinded={setTokenFinded}
+              />
+            )}
+          </Stack.Screen>
+        </Stack.Navigator>
+      ) : (
+        ({
+          /*<Stack.Navigator>
+           <Stack.Screen>
+             include the navigator here
+          </Stack.Screen>
+        </Stack.Navigator> */
+        },
+        null)
+      )}
+    </NavigationContainer>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+export default App;

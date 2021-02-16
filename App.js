@@ -6,6 +6,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 // ROUTES
 import ConnectionScreen from "./containers/ConnectionScreen.js";
 import AccountScreen from "./containers/AccountScreen.js";
+import HomeScreen from "./containers/HomeScreen.js";
 
 const Stack = createStackNavigator();
 
@@ -60,8 +61,9 @@ function App() {
       ) : (
         ({
           /*<Stack.Navigator>
-           <Stack.Screen>
-             include the navigator here
+           <Stack.Screen name="home" options={{ header: () => null, animationEnabled: false }}>
+            //  include the navigator here
+            {<() => HomeScreen />}
           </Stack.Screen>
         </Stack.Navigator> */
         },
